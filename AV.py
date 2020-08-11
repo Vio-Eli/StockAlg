@@ -41,21 +41,50 @@ def incoming_data(stock, data_type):
     date_old = []
     close_old = []
 
+    open_old = []
+    cls_old = []
+
     for keys_old in data_old[0].keys():
         if int(keys_old[0:4]) > 1970:
             date_old.append(pd.to_datetime(keys_old))
             close_old.append(float(data_old[0][keys_old][str(data_typer)]))
+            
+            open_old.append(float(data_old[0][keys_old]['1. open']))
+            cls_old.append(float(data_old[0][keys_old][str('4. close')]))
 
 
     df_old = pd.DataFrame({'date': date_old, str(data_type): close_old})
+    df_open = pd.DataFrame({'date': date_old, 'open': open_old})
+    df_close = pd.DataFrame({'date': date_old, 'close': cls_old})
+
 
     df_old.sort_values('date', ascending = False, inplace = True)
+    df_open.sort_values('date', ascending = False, inplace = True)
+    df_close.sort_values('date', ascending = False, inplace = True)
+
 
     df_old['date'] = pd.to_datetime(df_old['date'])
+    df_open['date'] = pd.to_datetime(df_open['date'])
+    df_close['date'] = pd.to_datetime(df_close['date'])
+    
 
     df_old.set_index(['date'], inplace = True)
+    df_open.set_index(['date'], inplace = True)
+    df_close.set_index(['date'], inplace = True)
 
-    return df_old
+    if len(df_open) != len(df_close):
+        print("ERROR: Length of data differs")
+    
+    #df_close_lst = df_close['close'].values.tolist()
+    #df_open_lst = df_open['open'].values.tolist()
+    #difflist = [df_close_lst[i] - df_open_lst[i] for i in range(len(df_open))]
+
+    #difflist = pd.concat([df_open, df_close])
+    difflist = pd.merge(df_open, df_close, left_index=True, right_index=True)
+    difflist['diff'] = difflist['close'] - difflist['open']
+           
+
+    return df_old, difflist
 
 
 # misc keys:

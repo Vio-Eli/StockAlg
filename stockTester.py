@@ -1,12 +1,14 @@
-import yfinance as yf
+#import yfinance as yf
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime as dt
 import pandas as pd
 import csv
 from AV import incoming_data as datastock
+import stockMath
 
-stockList = ["INTC", "GOOGL", "AAPL"]
+#stockList = ["INTC", "GOOGL", "AAPL"]
+stockList = ["GOOGL"] # for development purposes, im only using 1 stock.
 principal = 100
 
 
@@ -30,18 +32,30 @@ for i in stockList:
     #print(stockData) #FIXME Debug
     stockData['Adj Close'].plot() 
 """
-
+""" Random data? for now
 myData = pd.read_csv('stockTesting.csv', index_col = 'date')
 #print(myData) #FIXME Debug
 myData['Adj Close'].plot()
+"""
 
 for i in stockList:
     #data = AlphaVantage.GetStockData(i, interval)
     #data['4. close'].plot() #FIXME Broken way of getting data from api. OLD
 
-    df = datastock(i, data_type)
-    print(df)
+    df, diff = datastock(i, data_type)
+    #print(df) #FIXME Debug
     df[data_type].plot()
+    print(diff) #FIXME Debug
+
+    #diff is the pandas array difference between the open and close of the stock, indexed by date
+    diff['diff'].plot()
+    diff['open'].plot()
+    diff['close'].plot()
+    
+    #smv = df[data_type].values.tolist()
+    #print(smv)
+    #avg = stockMath.getAvgList(smv)
+    #print(i + ": " + avg)
 
     
 
