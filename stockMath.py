@@ -1,4 +1,6 @@
 import math
+#test
+
 
 def calcAvg(oldAvg, dataCount, newPoint):
     # Takes in an old average, the length of the data used in making that point, and a new point
